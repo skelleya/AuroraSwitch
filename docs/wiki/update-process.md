@@ -10,21 +10,9 @@ AuroraSwitch now includes a lightweight update manifest and two delivery mechani
 ## Publishing a New Release
 
 1. Bump the dashboard version in `src/KvmSwitch.Dashboard/KvmSwitch.Dashboard.csproj` (`<Version>`, `<FileVersion>`, `<AssemblyVersion>`). The in-app status bar and update checker both read this value, so the “tick” auto-increments every release.
-2. Build a signed installer (`installer\build-installer.ps1`) and upload it to your GitHub release.
-3. Edit `docs/update-manifest.json`:
-   ```json
-   {
-     "version": "1.1.0",
-     "downloadUrl": "https://github.com/your-org/AuroraSwitch/releases/download/v1.1.0/AuroraSwitchSetup.exe",
-     "releaseNotesUrl": "https://github.com/your-org/AuroraSwitch/releases/tag/v1.1.0",
-     "publishedAt": "2025-12-01T00:00:00Z",
-     "notes": [
-       "Short bullet describing change 1",
-       "Short bullet describing change 2"
-     ]
-   }
-   ```
-4. Commit and push the manifest (or update it via GitHub web UI). By default clients fetch `https://raw.githubusercontent.com/skelleya/AuroraSwitch/master/docs/update-manifest.json`; override with the `AURORASWITCH_UPDATE_MANIFEST` environment variable if you host it elsewhere.
+2. Build a signed installer (`installer\build-installer.ps1`) and upload it as an asset on a new GitHub Release (use a tag such as `v1.3.0` that matches the version you just baked into the csproj). Add release notes in the body—those lines are automatically parsed into the in-app “Release notes” panel.
+3. Done! The dashboard now queries `https://api.github.com/repos/skelleya/AuroraSwitch/releases/latest` by default, so as soon as the release is published, “Check for Updates…” sees it and the in-app downloader will pull the `.exe` asset directly from GitHub.
+4. Optional: if you still need to point at a custom manifest or self-hosted installer, set `AURORASWITCH_UPDATE_MANIFEST` to a JSON URL and the legacy manifest path will override the GitHub release flow.
 
 ## Custom Manifest Location
 
