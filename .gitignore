@@ -1,0 +1,25 @@
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+
+# Installer artifacts
+installer/dist/
+installer/staging/
+
+# Logs & local data
+*.log
+*.etl
+*.sha256
+*.tmp
+C:/ProgramData/AuroraSwitch/logs/
+
+# Publish output folders
+**/pub/
+**/publish/
+

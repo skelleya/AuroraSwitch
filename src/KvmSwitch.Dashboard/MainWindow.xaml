@@ -1,0 +1,117 @@
+<Window x:Class="KvmSwitch.Dashboard.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:converters="clr-namespace:KvmSwitch.Dashboard.Converters"
+        Title="AuroraSwitch KVM Suite" Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <converters:NullToEmptyConverter x:Key="NullToEmptyConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Menu Bar -->
+        <Menu Grid.Row="0" Background="#F0F0F0">
+            <MenuItem Header="File">
+                <MenuItem Header="Settings" Click="Settings_Click"/>
+                <Separator/>
+                <MenuItem Header="Exit" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="Endpoints">
+                <MenuItem Header="Refresh Devices" Click="RefreshDevices_Click"/>
+                <MenuItem Header="Manage Hotkeys" Click="ManageHotkeys_Click"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="Check for Updates..." Click="CheckUpdates_Click"/>
+                <MenuItem Header="Patch Notes / What's New" Click="PatchNotes_Click"/>
+                <Separator/>
+                <MenuItem Header="About" Click="About_Click"/>
+            </MenuItem>
+        </Menu>
+        
+        <!-- Main Content Area -->
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Endpoint List -->
+            <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Endpoints" FontWeight="Bold" FontSize="14" Margin="10,10,10,5"/>
+                    <ListBox x:Name="EndpointListBox" 
+                             ItemsSource="{Binding Endpoints}"
+                             SelectionChanged="EndpointListBox_SelectionChanged"
+                             SelectedItem="{Binding SelectedEndpoint}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding Type}" FontSize="10" Foreground="Gray"/>
+                                    <TextBlock FontSize="10">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} - {1}">
+                                                <Binding Path="Status"/>
+                                                <Binding Path="ConnectionType"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding DeviceId, Converter={StaticResource NullToEmptyConverter}}" 
+                                               FontSize="9" 
+                                               Foreground="DarkGray"
+                                               TextTrimming="CharacterEllipsis"
+                                               MaxWidth="200"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+            
+            <!-- Video Preview Area -->
+            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Background="Black">
+                <Grid>
+                    <TextBlock x:Name="PreviewPlaceholder" 
+                               Text="{Binding VideoPlaceholderText}" 
+                               Foreground="White" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="20"
+                               Visibility="{Binding IsVideoVisible, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                    <!-- Video rendering using Image control -->
+                    <Image x:Name="VideoImage" 
+                           Visibility="{Binding IsVideoVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                           Stretch="Uniform"
+                           Source="{Binding VideoFrameSource}"/>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- Status Bar -->
+        <StatusBar Grid.Row="2" Background="#E0E0E0">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Ready"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="ActiveEndpointText" Text="Active: None"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="VersionText" Text="AuroraSwitch"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
+

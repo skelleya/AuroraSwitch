@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "downloadUrl": "https://github.com/your-org/AuroraSwitch/releases/latest/download/AuroraSwitchSetup.exe",
+  "releaseNotesUrl": "https://github.com/your-org/AuroraSwitch/releases/latest",
+  "publishedAt": "2025-11-14T00:00:00Z",
+  "notes": [
+    "Initial public release of AuroraSwitch Dashboard.",
+    "Added system tray support and Mac USB-C detection.",
+    "Introduced built-in update checker and patch notes viewer."
+  ]
+}
+
+

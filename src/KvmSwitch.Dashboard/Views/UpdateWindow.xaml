@@ -1,0 +1,79 @@
+<Window x:Class="KvmSwitch.Dashboard.Views.UpdateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AuroraSwitch Updates"
+        Width="480"
+        Height="420"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,8">
+            <TextBlock Text="Update status" FontSize="16" FontWeight="Bold"/>
+            <TextBlock x:Name="StatusText" Text="Checking for updates..."
+                       Margin="0,4,0,0" Foreground="Gray"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Current Version" FontWeight="Bold"/>
+                <TextBlock x:Name="CurrentVersionText" Margin="0,4,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="Latest Version" FontWeight="Bold"/>
+                <TextBlock x:Name="LatestVersionText" Margin="0,4,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <GroupBox Grid.Row="2" Header="Release notes">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <TextBlock x:Name="PublishedText" Foreground="Gray" Margin="0,0,0,8"/>
+                    <ItemsControl x:Name="NotesList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                    <TextBlock Text="• " FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" Width="400"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </GroupBox>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,12,0,0">
+            <Button x:Name="DownloadButton"
+                    Content="Download Update"
+                    Width="140"
+                    Margin="0,0,8,0"
+                    Click="DownloadButton_Click"
+                    IsEnabled="False"/>
+            <Button x:Name="NotesButton"
+                    Content="Open Release Notes"
+                    Width="150"
+                    Margin="0,0,8,0"
+                    Click="NotesButton_Click"
+                    IsEnabled="False"/>
+            <Button Content="Close"
+                    Width="80"
+                    Click="CloseButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+
