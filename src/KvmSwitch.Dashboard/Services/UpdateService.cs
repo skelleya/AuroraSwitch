@@ -25,7 +25,7 @@ public class UpdateService : IUpdateService, IDisposable
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AuroraSwitchDashboard/1.0");
 
         _manifestUrl = Environment.GetEnvironmentVariable("AURORASWITCH_UPDATE_MANIFEST")
-            ?? "https://raw.githubusercontent.com/your-org/AuroraSwitch/main/docs/update-manifest.json";
+            ?? "https://raw.githubusercontent.com/skelleya/AuroraSwitch/master/docs/update-manifest.json";
 
         CurrentVersion = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(1, 0, 0, 0);
     }

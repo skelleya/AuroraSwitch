@@ -9,8 +9,9 @@ AuroraSwitch now includes a lightweight update manifest and two delivery mechani
 
 ## Publishing a New Release
 
-1. Build a signed installer (`installer\build-installer.ps1`) and upload it to your GitHub release.
-2. Edit `docs/update-manifest.json`:
+1. Bump the dashboard version in `src/KvmSwitch.Dashboard/KvmSwitch.Dashboard.csproj` (`<Version>`, `<FileVersion>`, `<AssemblyVersion>`). The in-app status bar and update checker both read this value, so the “tick” auto-increments every release.
+2. Build a signed installer (`installer\build-installer.ps1`) and upload it to your GitHub release.
+3. Edit `docs/update-manifest.json`:
    ```json
    {
      "version": "1.1.0",
@@ -23,7 +24,7 @@ AuroraSwitch now includes a lightweight update manifest and two delivery mechani
      ]
    }
    ```
-3. Commit and push the manifest (or update it via GitHub web UI). Clients read the raw file via the URL configured in `UpdateService`/`UpdateService.exe`.
+4. Commit and push the manifest (or update it via GitHub web UI). By default clients fetch `https://raw.githubusercontent.com/skelleya/AuroraSwitch/master/docs/update-manifest.json`; override with the `AURORASWITCH_UPDATE_MANIFEST` environment variable if you host it elsewhere.
 
 ## Custom Manifest Location
 
