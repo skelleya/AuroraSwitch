@@ -5,7 +5,7 @@
         Title="Projection"
         WindowStyle="None"
         ResizeMode="NoResize"
-        Background="Black"
+        Background="{DynamicResource VideoBackgroundBrush}"
         Topmost="True"
         ShowInTaskbar="False"
         WindowStartupLocation="Manual">
@@ -13,12 +13,12 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
     </Window.Resources>
-    <Grid Background="Black">
+    <Grid Background="{DynamicResource VideoBackgroundBrush}">
         <Image Source="{Binding VideoFrameSource}"
                Stretch="Uniform"
                Visibility="{Binding IsVideoVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
         <TextBlock Text="{Binding VideoPlaceholderText}"
-                   Foreground="#DDDDDD"
+                   Foreground="{DynamicResource SecondaryTextBrush}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    FontSize="24"
@@ -28,8 +28,8 @@
                    Visibility="{Binding IsVideoVisible, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
         <Border Background="#66000000" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="4" Margin="20" Padding="10">
             <StackPanel>
-                <TextBlock Text="Projection Mode" Foreground="White" FontWeight="Bold"/>
-                <TextBlock Text="Press Esc or double-click to exit" Foreground="White"/>
+                <TextBlock Text="Projection Mode" Foreground="{DynamicResource AccentForegroundBrush}" FontWeight="Bold"/>
+                <TextBlock Text="Press Esc or double-click to exit" Foreground="{DynamicResource AccentForegroundBrush}"/>
             </StackPanel>
         </Border>
     </Grid>

@@ -4,13 +4,15 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:converters="clr-namespace:KvmSwitch.Dashboard.Converters"
         Title="AuroraSwitch KVM Suite" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource PrimaryTextBrush}">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <converters:NullToEmptyConverter x:Key="NullToEmptyConverter"/>
     </Window.Resources>
-    <Grid>
+    <Grid Background="{DynamicResource WindowBackgroundBrush}" TextElement.Foreground="{DynamicResource PrimaryTextBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -18,7 +20,7 @@
         </Grid.RowDefinitions>
         
         <!-- Menu Bar -->
-        <Menu Grid.Row="0" Background="#F0F0F0">
+        <Menu Grid.Row="0" Background="{DynamicResource MenuBackgroundBrush}" Foreground="{DynamicResource MenuForegroundBrush}">
             <MenuItem Header="File">
                 <MenuItem Header="Settings" Click="Settings_Click"/>
                 <Separator/>
@@ -44,13 +46,15 @@
             </Grid.ColumnDefinitions>
             
             <!-- Endpoint List -->
-            <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="0,0,10,0">
+            <Border Grid.Column="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Margin="0,0,10,0" Background="{DynamicResource CardBackgroundBrush}" Padding="0,0,0,10">
                 <StackPanel>
                     <TextBlock Text="Endpoints" FontWeight="Bold" FontSize="14" Margin="10,10,10,5"/>
                     <ListBox x:Name="EndpointListBox" 
                              ItemsSource="{Binding Endpoints}"
                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                              ScrollViewer.CanContentScroll="True"
+                             Background="{DynamicResource CardBackgroundBrush}"
+                             BorderThickness="0"
                              SelectionChanged="EndpointListBox_SelectionChanged"
                              SelectedItem="{Binding SelectedEndpoint}">
                         <ListBox.ItemTemplate>
@@ -84,6 +88,8 @@
                              Margin="10,0,10,10"
                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                              ScrollViewer.CanContentScroll="True"
+                             Background="{DynamicResource CardBackgroundBrush}"
+                             BorderThickness="0"
                              IsHitTestVisible="False">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -103,16 +109,16 @@
             </Border>
             
             <!-- Video Preview Area -->
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Margin="0,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" BorderBrush="Gray" BorderThickness="1" Background="Black">
+                <Border Grid.Row="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Background="{DynamicResource VideoBackgroundBrush}">
                     <Grid>
                         <TextBlock x:Name="PreviewPlaceholder" 
                                    Text="{Binding VideoPlaceholderText}" 
-                                   Foreground="White" 
+                                   Foreground="{DynamicResource SecondaryTextBrush}" 
                                    HorizontalAlignment="Center" 
                                    VerticalAlignment="Center"
                                    FontSize="16"
@@ -129,18 +135,20 @@
                 </Border>
 
                 <!-- Host Displays Panel -->
-                <GroupBox Grid.Row="1" Header="Host Displays" Margin="0,12,0,0">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,8">
+                <GroupBox Grid.Row="1" Header="Host Displays" Margin="0,12,0,0" Foreground="{DynamicResource PrimaryTextBrush}">
+                    <Border Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="12">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,8">
                             <Button Content="Refresh Displays"
-                                    Width="140"
-                                    Command="{Binding RefreshDisplaysCommand}"/>
-                        </StackPanel>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="140">
+                                    Width="150"
+                                    Command="{Binding RefreshDisplaysCommand}"
+                                    Style="{DynamicResource SecondaryButtonStyle}"/>
+                            </StackPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="160">
                             <ItemsControl ItemsSource="{Binding Displays}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border BorderThickness="1" BorderBrush="#DDD" Padding="8" Margin="0,0,0,8">
+                                        <Border BorderThickness="1" BorderBrush="{DynamicResource CardBorderBrush}" Padding="8" Margin="0,0,0,8" Background="{DynamicResource WindowBackgroundBrush}">
                                             <StackPanel>
                                                 <TextBlock Text="{Binding FriendlyName}" FontWeight="Bold"/>
                                                 <TextBlock Text="{Binding Resolution}" Foreground="Gray"/>
@@ -153,10 +161,11 @@
                                                     <Button Content="Release"
                                                             Width="80"
                                                             Click="ReleaseDisplay_Click"
+                                                            Style="{DynamicResource SecondaryButtonStyle}"
                                                             IsEnabled="{Binding IsProjected}"/>
                                                 </StackPanel>
                                                 <TextBlock Text="Active projection in progress"
-                                                           Foreground="OrangeRed"
+                                                           Foreground="{DynamicResource AccentBrush}"
                                                            Visibility="{Binding IsProjected, Converter={StaticResource BoolToVisibilityConverter}}"
                                                            FontSize="11"
                                                            Margin="0,4,0,0"/>
@@ -165,14 +174,15 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        </ScrollViewer>
-                    </StackPanel>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
                 </GroupBox>
             </Grid>
         </Grid>
         
         <!-- Status Bar -->
-        <StatusBar Grid.Row="2" Background="#E0E0E0">
+        <StatusBar Grid.Row="2" Background="{DynamicResource StatusBarBackgroundBrush}" Foreground="{DynamicResource StatusBarForegroundBrush}">
             <StatusBarItem>
                 <TextBlock x:Name="StatusText" Text="Ready"/>
             </StatusBarItem>

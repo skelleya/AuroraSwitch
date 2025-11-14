@@ -10,6 +10,7 @@ using KvmSwitch.Core.Interfaces;
 using KvmSwitch.Core.Models;
 using KvmSwitch.Dashboard.ViewModels;
 using KvmSwitch.Dashboard.Views;
+using KvmSwitch.Dashboard.Themes;
 
 namespace KvmSwitch.Dashboard;
 
@@ -155,6 +156,7 @@ public partial class MainWindow : Window
     private void SettingsServiceOnSettingsChanged(object? sender, AppSettings e)
     {
         _currentSettings = e;
+        ThemeManager.ApplyTheme(e.Theme);
     }
 
     private void MainWindow_Closing(object? sender, CancelEventArgs e)

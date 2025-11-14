@@ -15,6 +15,7 @@ using KvmSwitch.Capture.Interfaces;
 using KvmSwitch.Capture.Services;
 using KvmSwitch.Dashboard.ViewModels;
 using KvmSwitch.Dashboard.Services;
+using KvmSwitch.Dashboard.Themes;
 using Application = System.Windows.Application;
 
 namespace KvmSwitch.Dashboard;
@@ -167,6 +168,8 @@ public partial class App : PrismApplication
                 logger.LogWarning(ex, "Failed to load app settings, using defaults");
                 _currentSettings = new AppSettings();
             }
+
+            ThemeManager.ApplyTheme(_currentSettings?.Theme);
 
             // Create view model
             MainViewModel viewModel;

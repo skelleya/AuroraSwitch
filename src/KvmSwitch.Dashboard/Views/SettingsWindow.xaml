@@ -5,12 +5,22 @@
         Height="300"
         Width="420"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
-    <Grid Margin="16">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        ResizeMode="NoResize"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource PrimaryTextBrush}">
+    <Border Margin="16"
+            Background="{DynamicResource CardBackgroundBrush}"
+            BorderBrush="{DynamicResource CardBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="10"
+            Padding="16">
+        <Grid TextElement.Foreground="{DynamicResource PrimaryTextBrush}"
+              TextElement.FontSize="14"
+              TextElement.FontWeight="Normal">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
         <StackPanel>
             <CheckBox x:Name="StartMinimizedCheck"
@@ -25,28 +35,32 @@
 
             <TextBlock Text="Theme"
                        FontWeight="Bold"
-                       Margin="0,0,0,4"/>
+                       Margin="0,4,0,4"/>
             <ComboBox x:Name="ThemeCombo"
-                      Margin="0,0,0,12">
+                      Margin="0,0,0,12"
+                      Background="{DynamicResource CardBackgroundBrush}"
+                      BorderBrush="{DynamicResource CardBorderBrush}">
                 <ComboBoxItem Content="Dark"/>
                 <ComboBoxItem Content="Light"/>
                 <ComboBoxItem Content="System"/>
             </ComboBox>
         </StackPanel>
 
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,16,0,0">
-            <Button Content="Save"
-                    Width="90"
-                    Margin="0,0,8,0"
-                    Click="Save_Click"/>
-            <Button Content="Cancel"
-                    Width="90"
-                    Click="Cancel_Click"/>
-        </StackPanel>
-    </Grid>
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,16,0,0">
+                <Button Content="Save"
+                        Width="90"
+                        Margin="0,0,8,0"
+                        Click="Save_Click"/>
+                <Button Content="Cancel"
+                        Width="90"
+                        Click="Cancel_Click"
+                        Style="{DynamicResource SecondaryButtonStyle}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>
 
 
