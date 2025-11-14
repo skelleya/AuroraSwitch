@@ -47,6 +47,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<HostDisplayInfo> _displays = new();
 
+    [ObservableProperty]
+    private ObservableCollection<Endpoint> _peripheralEndpoints = new();
+
     private readonly IHotkeyManager? _hotkeyManager;
 
     public MainViewModel(
@@ -107,9 +110,10 @@ public partial class MainViewModel : ObservableObject
     {
         var allEndpoints = await _endpointRegistry.GetAllEndpointsAsync();
         Endpoints.Clear();
+        PeripheralEndpoints.Clear();
         foreach (var endpoint in allEndpoints)
         {
-            Endpoints.Add(endpoint);
+            AddEndpointToCollections(endpoint);
         }
     }
 
@@ -138,7 +142,8 @@ public partial class MainViewModel : ObservableObject
     {
         App.Current.Dispatcher.Invoke(() =>
         {
-            Endpoints.Add(endpoint);
+            RemoveEndpointFromCollections(endpoint.Id);
+            AddEndpointToCollections(endpoint);
         });
     }
 
@@ -146,11 +151,7 @@ public partial class MainViewModel : ObservableObject
     {
         App.Current.Dispatcher.Invoke(() =>
         {
-            var toRemove = Endpoints.FirstOrDefault(e => e.Id == endpoint.Id);
-            if (toRemove != null)
-            {
-                Endpoints.Remove(toRemove);
-            }
+            RemoveEndpointFromCollections(endpoint.Id);
         });
     }
 
@@ -158,12 +159,8 @@ public partial class MainViewModel : ObservableObject
     {
         App.Current.Dispatcher.Invoke(() =>
         {
-            var existing = Endpoints.FirstOrDefault(e => e.Id == endpoint.Id);
-            if (existing != null)
-            {
-                var index = Endpoints.IndexOf(existing);
-                Endpoints[index] = endpoint;
-            }
+            RemoveEndpointFromCollections(endpoint.Id);
+            AddEndpointToCollections(endpoint);
         });
     }
 
@@ -434,6 +431,72 @@ public partial class MainViewModel : ObservableObject
         {
             StatusText = $"Discovery error: {ex.Message}";
         }
+    }
+
+    private void AddEndpointToCollections(Endpoint endpoint)
+    {
+        if (IsPeripheralEndpoint(endpoint))
+        {
+            AddOrReplace(PeripheralEndpoints, endpoint);
+        }
+        else
+        {
+            AddOrReplace(Endpoints, endpoint);
+        }
+    }
+
+    private void RemoveEndpointFromCollections(string endpointId)
+    {
+        RemoveById(Endpoints, endpointId);
+        RemoveById(PeripheralEndpoints, endpointId);
+    }
+
+    private static void AddOrReplace(ObservableCollection<Endpoint> collection, Endpoint endpoint)
+    {
+        var existing = collection.FirstOrDefault(e => e.Id == endpoint.Id);
+        if (existing != null)
+        {
+            var index = collection.IndexOf(existing);
+            collection[index] = endpoint;
+        }
+        else
+        {
+            collection.Add(endpoint);
+        }
+    }
+
+    private static void RemoveById(ObservableCollection<Endpoint> collection, string endpointId)
+    {
+        var existing = collection.FirstOrDefault(e => e.Id == endpointId);
+        if (existing != null)
+        {
+            collection.Remove(existing);
+        }
+    }
+
+    private static bool IsPeripheralEndpoint(Endpoint endpoint)
+    {
+        if (endpoint.Type == EndpointType.Host)
+        {
+            return false;
+        }
+
+        if (endpoint.Id.StartsWith("capture:", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        if (endpoint.Id.StartsWith("usb:", StringComparison.OrdinalIgnoreCase) && endpoint.Type == EndpointType.Unknown)
+        {
+            return true;
+        }
+
+        if (endpoint.Name.Contains("camera", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return endpoint.Type == EndpointType.Unknown && endpoint.CaptureDeviceIds.Count == 0;
     }
 }
 

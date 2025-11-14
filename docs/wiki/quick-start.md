@@ -75,6 +75,7 @@ When you first launch the Dashboard:
 
 - Go to: **Endpoints > Refresh Devices**
 - This scans for new USB-C and HDMI capture devices
+- The **Peripherals (read-only)** list underneath Endpoints shows webcams, capture cards, and input devices that were detected but aren’t switchable computers. Those entries are informational only—you can’t click them and they won’t clutter the main endpoint list.
 
 ### Projecting Endpoints to Host Monitors
 

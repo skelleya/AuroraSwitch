@@ -75,6 +75,30 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
+
+                    <TextBlock Text="Peripherals (read-only)"
+                               FontWeight="Bold"
+                               FontSize="12"
+                               Margin="10,16,10,5"/>
+                    <ListBox ItemsSource="{Binding PeripheralEndpoints}"
+                             Margin="10,0,10,10"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.CanContentScroll="True"
+                             IsHitTestVisible="False">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="4">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding ConnectionType}" FontSize="10" Foreground="Gray"/>
+                                    <TextBlock Text="{Binding DeviceId, Converter={StaticResource NullToEmptyConverter}}"
+                                               FontSize="9"
+                                               Foreground="DarkGray"
+                                               TextTrimming="CharacterEllipsis"
+                                               MaxWidth="200"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </StackPanel>
             </Border>
             
