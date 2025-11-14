@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using KvmSwitch.Dashboard.Models;
 using KvmSwitch.Core.Interfaces;
 using KvmSwitch.Core.Models;
 using KvmSwitch.Dashboard.ViewModels;
@@ -19,6 +21,7 @@ public partial class MainWindow : Window
     private readonly IAppSettingsService _settingsService;
     private readonly IUpdateService _updateService;
     private AppSettings _currentSettings = new();
+    private readonly Dictionary<string, MonitorDisplayWindow> _projectedDisplays = new();
 
     public MainWindow(
         MainViewModel viewModel,
@@ -170,6 +173,70 @@ public partial class MainWindow : Window
         }
 
         _settingsService.SettingsChanged -= SettingsServiceOnSettingsChanged;
+
+        foreach (var window in _projectedDisplays.Values)
+        {
+            window.Closed -= OnProjectionWindowClosed;
+            window.Close();
+        }
+        _projectedDisplays.Clear();
+    }
+
+    private void ProjectDisplay_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || button.DataContext is not HostDisplayInfo display)
+        {
+            return;
+        }
+
+        if (_viewModel.SelectedEndpoint == null || !_viewModel.IsVideoVisible)
+        {
+            MessageBox.Show("Select an endpoint with an active video feed before projecting to a monitor.", "Projection",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        if (_projectedDisplays.ContainsKey(display.DeviceName))
+        {
+            _projectedDisplays[display.DeviceName].Activate();
+            return;
+        }
+
+        var window = new MonitorDisplayWindow
+        {
+            Owner = this,
+            DataContext = DataContext
+        };
+        window.SetTargetDisplay(display);
+        window.Closed += OnProjectionWindowClosed;
+        _projectedDisplays[display.DeviceName] = window;
+        _viewModel.SetDisplayProjection(display.DeviceName, true);
+        window.Show();
+    }
+
+    private void ReleaseDisplay_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || button.DataContext is not HostDisplayInfo display)
+        {
+            return;
+        }
+
+        if (_projectedDisplays.TryGetValue(display.DeviceName, out var window))
+        {
+            window.Closed -= OnProjectionWindowClosed;
+            window.Close();
+            _projectedDisplays.Remove(display.DeviceName);
+            _viewModel.SetDisplayProjection(display.DeviceName, false);
+        }
+    }
+
+    private void OnProjectionWindowClosed(object? sender, EventArgs e)
+    {
+        if (sender is MonitorDisplayWindow window && window.TargetDisplay != null)
+        {
+            _projectedDisplays.Remove(window.TargetDisplay.DeviceName);
+            _viewModel.SetDisplayProjection(window.TargetDisplay.DeviceName, false);
+        }
     }
 }
 

@@ -49,6 +49,8 @@
                     <TextBlock Text="Endpoints" FontWeight="Bold" FontSize="14" Margin="10,10,10,5"/>
                     <ListBox x:Name="EndpointListBox" 
                              ItemsSource="{Binding Endpoints}"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.CanContentScroll="True"
                              SelectionChanged="EndpointListBox_SelectionChanged"
                              SelectedItem="{Binding SelectedEndpoint}">
                         <ListBox.ItemTemplate>
@@ -77,25 +79,72 @@
             </Border>
             
             <!-- Video Preview Area -->
-            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Background="Black">
-                <Grid>
-                    <TextBlock x:Name="PreviewPlaceholder" 
-                               Text="{Binding VideoPlaceholderText}" 
-                               Foreground="White" 
-                               HorizontalAlignment="Center" 
-                               VerticalAlignment="Center"
-                               FontSize="16"
-                               TextWrapping="Wrap"
-                               TextAlignment="Center"
-                               Margin="20"
-                               Visibility="{Binding IsVideoVisible, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                    <!-- Video rendering using Image control -->
-                    <Image x:Name="VideoImage" 
-                           Visibility="{Binding IsVideoVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-                           Stretch="Uniform"
-                           Source="{Binding VideoFrameSource}"/>
-                </Grid>
-            </Border>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" BorderBrush="Gray" BorderThickness="1" Background="Black">
+                    <Grid>
+                        <TextBlock x:Name="PreviewPlaceholder" 
+                                   Text="{Binding VideoPlaceholderText}" 
+                                   Foreground="White" 
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   Margin="20"
+                                   Visibility="{Binding IsVideoVisible, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                        <!-- Video rendering using Image control -->
+                        <Image x:Name="VideoImage" 
+                               Visibility="{Binding IsVideoVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                               Stretch="Uniform"
+                               Source="{Binding VideoFrameSource}"/>
+                    </Grid>
+                </Border>
+
+                <!-- Host Displays Panel -->
+                <GroupBox Grid.Row="1" Header="Host Displays" Margin="0,12,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,8">
+                            <Button Content="Refresh Displays"
+                                    Width="140"
+                                    Command="{Binding RefreshDisplaysCommand}"/>
+                        </StackPanel>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="140">
+                            <ItemsControl ItemsSource="{Binding Displays}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="1" BorderBrush="#DDD" Padding="8" Margin="0,0,0,8">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding FriendlyName}" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Resolution}" Foreground="Gray"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0" HorizontalAlignment="Left">
+                                                    <Button Content="Project Selected Endpoint"
+                                                            Width="180"
+                                                            Margin="0,0,8,0"
+                                                            Click="ProjectDisplay_Click"
+                                                            IsEnabled="{Binding DataContext.IsVideoVisible, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                                    <Button Content="Release"
+                                                            Width="80"
+                                                            Click="ReleaseDisplay_Click"
+                                                            IsEnabled="{Binding IsProjected}"/>
+                                                </StackPanel>
+                                                <TextBlock Text="Active projection in progress"
+                                                           Foreground="OrangeRed"
+                                                           Visibility="{Binding IsProjected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                           FontSize="11"
+                                                           Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
         </Grid>
         
         <!-- Status Bar -->

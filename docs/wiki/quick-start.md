@@ -76,6 +76,13 @@ When you first launch the Dashboard:
 - Go to: **Endpoints > Refresh Devices**
 - This scans for new USB-C and HDMI capture devices
 
+### Projecting Endpoints to Host Monitors
+
+- Select an endpoint so its live video feed is running in the preview pane.
+- In the **Host Displays** panel (bottom-right), click **Project Selected Endpoint** next to the monitor you want to occupy. The dashboard will open a full-screen window on that monitor and stretch the capture feed, effectively forcing that display to show the other PC even though it is only cabled to the host machine.
+- Press `Esc` or double-click the projected screen to release it, or click **Release** in the Host Displays list.
+- Use **Refresh Displays** if you plug in an additional monitor after launching the dashboard.
+
 ### Settings
 
 - Open **File > Settings**

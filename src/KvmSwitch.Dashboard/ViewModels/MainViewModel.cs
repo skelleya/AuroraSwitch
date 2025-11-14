@@ -5,8 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using KvmSwitch.Dashboard.Models;
 using KvmSwitch.Core.Interfaces;
 using KvmSwitch.Core.Models;
 using KvmSwitch.Capture.Interfaces;
@@ -42,6 +44,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string _videoPlaceholderText = "Select an endpoint to view video feed";
 
+    [ObservableProperty]
+    private ObservableCollection<HostDisplayInfo> _displays = new();
+
     private readonly IHotkeyManager? _hotkeyManager;
 
     public MainViewModel(
@@ -68,6 +73,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         LoadEndpoints();
+        LoadDisplays();
         _ = DiscoverInitialDevicesAsync();
     }
 
@@ -104,6 +110,27 @@ public partial class MainViewModel : ObservableObject
         foreach (var endpoint in allEndpoints)
         {
             Endpoints.Add(endpoint);
+        }
+    }
+
+    private void LoadDisplays()
+    {
+        Displays.Clear();
+        foreach (var screen in Screen.AllScreens)
+        {
+            var bounds = screen.Bounds;
+            Displays.Add(new HostDisplayInfo
+            {
+                DeviceName = screen.DeviceName,
+                FriendlyName = screen.Primary ? $"{screen.DeviceName} (Primary)" : screen.DeviceName,
+                Resolution = $"{bounds.Width} x {bounds.Height}",
+                IsPrimary = screen.Primary,
+                IsProjected = false,
+                Left = bounds.Left,
+                Top = bounds.Top,
+                Width = bounds.Width,
+                Height = bounds.Height
+            });
         }
     }
 
@@ -300,6 +327,21 @@ public partial class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             StatusText = $"Discovery error: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private void RefreshDisplays()
+    {
+        LoadDisplays();
+    }
+
+    public void SetDisplayProjection(string deviceName, bool isProjected)
+    {
+        var target = Displays.FirstOrDefault(d => d.DeviceName == deviceName);
+        if (target != null)
+        {
+            target.IsProjected = isProjected;
         }
     }
 
